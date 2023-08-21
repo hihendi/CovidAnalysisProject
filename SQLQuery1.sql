@@ -66,10 +66,26 @@ where continent is not null
 group by location, population
 order by PopulationInfectionPercentage desc
 
+-- Mengecek negara mana yang tinggi terinfeksi covid berdasarkan populasi dengan tanggal terinfeksi
+
+Select location, population, date, Max(total_cases) as HighestInfection, Max((CAST(total_cases as float) / population)) * 100 AS PopulationInfectionPercentage
+From Covid_Project..CovidDeaths
+where continent is not null
+group by location, population, date
+order by PopulationInfectionPercentage desc
+
 -- Mengecek negara mana yang jumlah kematian tertinggi per population
 Select Location, MAX(CAST(total_deaths as int)) as TotalDeath
 FROM Covid_Project..CovidDeaths
 where continent is not null
+group by location
+order by TotalDeath desc
+
+-- Mengecek kontingen mana yang jumlah kematian tertinggi per population tidak termasuk international, world, european union 
+Select Location, MAX(CAST(total_deaths as int)) as TotalDeath
+FROM Covid_Project..CovidDeaths
+where continent is null
+and location not in ('World', 'European Union', 'International', 'Lower middle income', 'Low income', 'Upper middle income', 'High income')
 group by location
 order by TotalDeath desc
 
